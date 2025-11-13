@@ -43,3 +43,28 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# SQLite databases (desenvolvimento local)
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs e arquivos temporários
+*.tmp
+*.temp
+.log
+
+# Arquivos específicos do Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Arquivos de configuração local
+*.local
+.env
+.env.local
+
+# Arquivos de backup do editor
+*~
+*.bak
+*.orig
