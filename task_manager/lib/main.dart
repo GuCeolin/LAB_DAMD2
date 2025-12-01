@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/services/connectivity_service.dart';
 import 'screens/task_list_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  ConnectivityService().initialize();
   runApp(const MyApp());
 }
 

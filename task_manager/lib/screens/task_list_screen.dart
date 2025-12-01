@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/services/connectivity_service.dart';
 import '../models/task.dart';
 import '../services/database_service.dart';
 
@@ -16,11 +17,20 @@ class _TaskListScreenState extends State<TaskListScreen> {
   final _descriptionController = TextEditingController();
   String _selectedPriority = 'medium';
   String _filterStatus = 'todas'; // todas, completas, pendentes
+  StreamSubscription? _connectivitySubscription;
+
+  ConnectionStatus _connectionStatus = ConnectionStatus.unknown;
 
   @override
   void initState() {
     super.initState();
     _loadTasks();
+    _connectionStatus = ConnectivityService().currentStatus;
+    _connectivitySubscription = ConnectivityService().connectionStatus.listen((status) {
+      setState(() {
+        _connectionStatus = status;
+      });
+    });
   }
 
   Future<void> _loadTasks() async {
@@ -140,8 +150,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 _deleteTask(task.id);
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Tarefa "${task.title}" excluída!')),
-                );
+                  SnackBar(content: Text('Tarefa "${task.title}" excluída!')),n                );
               },
               child: const Text('Excluir', style: TextStyle(color: Colors.red)),
             ),
@@ -155,6 +164,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _connectivitySubscription?.cancel();
     super.dispose();
   }
 
@@ -162,7 +172,27 @@ class _TaskListScreenState extends State<TaskListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Minhas Tarefas'),
+        title: Row(
+          children: [
+            const Text('Minhas Tarefas'),
+            const Spacer(),
+            Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _connectionStatus == ConnectionStatus.online
+                    ? Colors.green
+                    : Colors.red,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              _connectionStatus == ConnectionStatus.online ? 'Online' : 'Offline',
+              style: const TextStyle(fontSize: 14),
+            ),
+          ],
+        ),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
