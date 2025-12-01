@@ -1,0 +1,40 @@
+# IntelliJ-based IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# Build artifacts
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.ios/
+.android/
+
+# Generated files
+**/*.g.dart
+**/*.freezed.dart
+
+# Node.js backend
+backend/node_modules/
+backend/npm-debug.log*
+backend/.env # Environment variables, if any
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# VS Code settings
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/*.code-workspace
+
+# For server-side persistent data
+backend/tasks.json

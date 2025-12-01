@@ -7,6 +7,7 @@ class Task {
   final bool completed;
   final String priority;
   final DateTime createdAt;
+  final DateTime updatedAt;
 
   Task({
     String? id,
@@ -15,8 +16,10 @@ class Task {
     this.completed = false,
     this.priority = 'medium',
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? DateTime.now();
+       createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {
@@ -26,6 +29,7 @@ class Task {
       'completed': completed ? 1 : 0,
       'priority': priority,
       'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
@@ -37,6 +41,9 @@ class Task {
       completed: map['completed'] == 1,
       priority: map['priority'] ?? 'medium',
       createdAt: DateTime.parse(map['createdAt']),
+      updatedAt: map['updatedAt'] != null 
+          ? DateTime.parse(map['updatedAt']) 
+          : DateTime.parse(map['createdAt']), // Fallback for old data
     );
   }
 
@@ -45,6 +52,7 @@ class Task {
     String? description,
     bool? completed,
     String? priority,
+    DateTime? updatedAt,
   }) {
     return Task(
       id: id,
@@ -53,6 +61,7 @@ class Task {
       completed: completed ?? this.completed,
       priority: priority ?? this.priority,
       createdAt: createdAt,
+      updatedAt: updatedAt ?? DateTime.now(), // Auto-update timestamp on copyWith
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/services/connectivity_service.dart';
+import 'package:task_manager/services/sync_service.dart';
 import '../models/task.dart';
 import '../services/database_service.dart';
 
@@ -17,9 +18,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
   final _descriptionController = TextEditingController();
   String _selectedPriority = 'medium';
   String _filterStatus = 'todas'; // todas, completas, pendentes
-  StreamSubscription? _connectivitySubscription;
-
   ConnectionStatus _connectionStatus = ConnectionStatus.unknown;
+  StreamSubscription? _connectivitySubscription;
+  StreamSubscription? _syncSubscription;
 
   @override
   void initState() {
@@ -30,6 +31,12 @@ class _TaskListScreenState extends State<TaskListScreen> {
       setState(() {
         _connectionStatus = status;
       });
+    });
+    _syncSubscription = SyncService().onSyncCompleted.listen((_) {
+      _loadTasks();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sincronização concluída!')),
+      );
     });
   }
 
@@ -165,6 +172,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
     _titleController.dispose();
     _descriptionController.dispose();
     _connectivitySubscription?.cancel();
+    _syncSubscription?.cancel();
     super.dispose();
   }
 
