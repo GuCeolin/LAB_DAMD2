@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:task_manager/services/connectivity_service.dart';
 import 'package:task_manager/services/sync_service.dart';
 import '../models/task.dart';
@@ -157,7 +158,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 _deleteTask(task.id);
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Tarefa "${task.title}" excluída!')),n                );
+                  SnackBar(content: Text('Tarefa "${task.title}" excluída!')),
+                );
               },
               child: const Text('Excluir', style: TextStyle(color: Colors.red)),
             ),

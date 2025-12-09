@@ -76,11 +76,21 @@ app.put('/tasks/:id', (req, res) => {
         return res.json(updatedTask);
     }
 
-    // Last-Write-Wins logic on server side (optional, but good for conflict proof)
-    // Ideally, we compare timestamps. 
-    // But here we just trust the client's "LWW" claim or simply overwrite.
-    // The requirement says "If server has newer version...". 
-    // For simplicity, we'll just update.
+    // Last-Write-Wins logic on server side
+    const currentTask = tasks[index];
+    const incomingTime = new Date(updatedTask.updatedAt).getTime();
+    const currentTime = new Date(currentTask.updatedAt).getTime();
+
+    // If incoming is OLDER than current, reject it (Server Wins)
+    if (incomingTime < currentTime) {
+        console.log(`Conflict: Incoming update for ${id} is older (${updatedTask.updatedAt}) than server (${currentTask.updatedAt}). Ignoring.`);
+        return res.status(409).json({ 
+            error: 'Conflict: Server has a newer version',
+            serverTask: currentTask 
+        });
+    }
+
+    // Otherwise, Client Wins (incoming is newer or same)
     tasks[index] = updatedTask;
     writeTasks(tasks);
     console.log(`Task updated: ${updatedTask.title}`);

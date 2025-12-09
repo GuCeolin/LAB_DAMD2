@@ -36,10 +36,13 @@ class ConnectivityService {
     _updateConnectionStatus(connectivityResult);
   }
 
-  void _updateConnectionStatus(ConnectivityResult result) {
+  void _updateConnectionStatus(List<ConnectivityResult> result) {
     ConnectionStatus newStatus;
-    if (result == ConnectivityResult.none) {
+    // If the list contains ANY connection type other than none, we are online
+    if (result.contains(ConnectivityResult.none) && result.length == 1) {
       newStatus = ConnectionStatus.offline;
+    } else if (result.isEmpty) {
+       newStatus = ConnectionStatus.offline;
     } else {
       newStatus = ConnectionStatus.online;
     }
