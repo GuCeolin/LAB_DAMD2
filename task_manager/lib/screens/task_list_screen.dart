@@ -28,16 +28,20 @@ class _TaskListScreenState extends State<TaskListScreen> {
     super.initState();
     _loadTasks();
     _connectionStatus = ConnectivityService().currentStatus;
-    _connectivitySubscription = ConnectivityService().connectionStatus.listen((status) {
+    _connectivitySubscription = ConnectivityService().connectionStatus.listen((
+      status,
+    ) {
       setState(() {
         _connectionStatus = status;
       });
     });
     _syncSubscription = SyncService().onSyncCompleted.listen((_) {
       _loadTasks();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sincronização concluída!')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sincronização concluída!')),
+        );
+      }
     });
   }
 
@@ -198,7 +202,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
             ),
             const SizedBox(width: 4),
             Text(
-              _connectionStatus == ConnectionStatus.online ? 'Online' : 'Offline',
+              _connectionStatus == ConnectionStatus.online
+                  ? 'Online'
+                  : 'Offline',
               style: const TextStyle(fontSize: 14),
             ),
           ],
@@ -269,7 +275,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
+                  color: Colors.grey.withValues(alpha: 0.3),
                   spreadRadius: 1,
                   blurRadius: 3,
                   offset: const Offset(0, 2),
