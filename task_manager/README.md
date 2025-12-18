@@ -151,12 +151,87 @@ CREATE TABLE sync_queue (
    - Versão mais recente vence (LWW)
    - Atualiza local se servidor mais recente
 
+## 🧪 Testes e Demonstração
+
+### Testar Modo Offline
+
+1. **Iniciar com Conexão:**
+   - Backend rodando
+   - App conectado (indicador verde "Online")
+   - Criar algumas tarefas
+
+2. **Simular Offline:**
+   - **Emulador:** Ativar modo avião (arraste tela de cima ou use painel lateral)
+   - **Dispositivo:** Ativar modo avião
+   - Observar indicador mudar para "Offline" (vermelho)
+
+3. **Operações Offline:**
+   - Criar novas tarefas
+   - Editar tarefas existentes
+   - Marcar como completas
+   - Deletar tarefas
+   - Todas operações funcionam normalmente!
+
+4. **Restaurar Conexão:**
+   - Desativar modo avião
+   - Observar sincronização automática
+   - Verificar que todas operações foram enviadas ao backend
+
+### Testar Resolução de Conflitos
+
+1. Editar mesma tarefa no app (offline)
+2. Editar mesma tarefa diretamente no backend via API
+3. Restaurar conexão
+4. Versão mais recente (timestamp) prevalece
+
+## 🔧 Troubleshooting
+
+### Erro de Conexão com Backend
+
+**Emulador Android:**
+- Use `http://10.0.2.2:3000` (IP especial do emulador)
+- Editar em `lib/services/api_service.dart`
+
+**Dispositivo Físico:**
+1. Descobrir IP do seu PC:
+   ```bash
+   # Windows
+   ipconfig
+   # Procurar por IPv4 Address
+   ```
+2. Usar `http://<SEU_IP>:3000`
+3. PC e celular na mesma rede WiFi
+
+### Banco de Dados Corrompido
+```bash
+flutter clean
+flutter pub get
+flutter run
+```
+
+### Dependências Desatualizadas
+```bash
+flutter pub upgrade
+```
+
+## 📱 Configuração Importante
+
+**⚠️ Configurar IP da API antes de executar:**
+
+Arquivo: `lib/services/api_service.dart`
+```dart
+// Emulador Android
+static const String baseUrl = 'http://10.0.2.2:3000';
+
+// Dispositivo Físico (substituir pelo seu IP)
+static const String baseUrl = 'http://192.168.1.100:3000';
+```
+
 ## 🎓 Créditos
 
 Desenvolvido como projeto acadêmico para demonstração de arquitetura Offline-First em aplicações móveis.
 
-**Disciplina:** Desenvolvimento de Aplicativos Móveis  
-**Instituição:** [Sua Instituição]  
+**Disciplina:** Desenvolvimento de Aplicativos Móveis e Dispositivos  
 **Ano:** 2025
 
 ## 📄 Licença
